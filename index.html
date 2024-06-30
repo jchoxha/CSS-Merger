@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple CSS Merge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="merge.svg">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.7);
+        }
+        .fixed-header .title-container {
+            display: flex;
+            align-items: center;
+        }
+        .title-container img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .title-container h1 {
+            color: #BB86FC;
+            margin: 0;
+        }
+        .help-button {
+            margin-right: 30px;
+            background-color: #BB86FC;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .help-button img {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 60px auto 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+        }
+        .textarea-label{
+            position: relative;
+            left: -50%;
+            transform: translateX(50%);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #BB86FC;
+            color: #121212;
+        }
+        button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+        #button-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            width: 100%;
+            max-width: 800px; 
+        }
+        #button-container.fixed {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 58px;
+            justify-content: center;
+            background-color: #121212;
+            padding: 20px;
+            z-index: 1000;
+            max-width: 800px;
+            width: calc(100% - 40px);
+        }
+        pre {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            width: -webkit-fill-available;
+            min-height: 50px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1e1e1e;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .close-button {
+            background-color: #BB86FC;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #spacer {
+            height: 80px; /* Adjust this height to match the height of button-container */
+            display: none;
+            z-index: -1;
+        }
+        .clear-button {
+            margin-left: 10px;
+            background-color: #BB86FC;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            color: #121212;
+            font-size: 14px;
+        }
+        .textarea-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <div class="title-container">
+            <img src="merge.svg" alt="Site Icon">
+            <h1>Simple CSS Merge</h1>
+        </div>
+        <button class="help-button" onclick="openHelpModal()"><img src="question.svg" alt="Help"></button>
+    </div>
+    
+    <div class="container">
+        <div class="textarea-header">
+            <label for="original-css">Original CSS:</label>
+            <button class="clear-button" onclick="clearTextarea('original-css')">Clear</button>
+        </div>
+        <textarea id="original-css"></textarea>
+        
+        <div class="textarea-header">
+            <label for="changes-css">CSS Updates:</label>
+            <button class="clear-button" onclick="clearTextarea('changes-css')">Clear</button>
+        </div>
+        <textarea id="changes-css"></textarea>
+        
+        <div id="button-container">
+            <button onclick="mergeCSS()">Merge CSS</button>
+            <button id="copy-button" onclick="copyToClipboard()" disabled>Copy to Clipboard</button>
+            <button id="clear-button" onclick="clearMergedCSS()" disabled>Clear Merged CSS</button>
+        </div>
+    
+        <div id="spacer"></div>
+        
+        <h2 class="textarea-header">Updated CSS:</h2>
+        <pre id="updated-css"></pre>
+    </div>
+
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <h2>How to Use Simple CSS Merge</h2>
+            <p>1. Paste your original CSS into the "Original CSS" textarea.</p>
+            <p>2. Paste your CSS updates into the "CSS Updates" textarea.</p>
+            <p>3. Click the "Merge CSS" button to merge the changes.</p>
+            <p>4. If there are changes, the merged CSS will appear in the "Updated CSS" section.</p>
+            <p>5. You can then copy the merged CSS to your clipboard or clear the merged CSS.</p>
+            <button class="close-button" onclick="closeHelpModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <p id="alert-message"></p>
+            <button class="close-button" onclick="closeAlertModal()">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        function clearTextarea(id) {
+            document.getElementById(id).value = '';
+            saveContent(); 
+        }
+        // Save the content of the textareas to localStorage
+        function saveContent() {
+            localStorage.setItem('original-css', document.getElementById('original-css').value);
+            localStorage.setItem('changes-css', document.getElementById('changes-css').value);
+            localStorage.setItem('updated-css', document.getElementById('updated-css').innerText);
+        }
+
+        // Load the content from localStorage
+        function loadContent() {
+            if (localStorage.getItem('original-css')) {
+                document.getElementById('original-css').value = localStorage.getItem('original-css');
+            }
+            if (localStorage.getItem('changes-css')) {
+                document.getElementById('changes-css').value = localStorage.getItem('changes-css');
+            }
+            if (localStorage.getItem('updated-css')) {
+                document.getElementById('updated-css').innerText = localStorage.getItem('updated-css');
+            }
+            if (document.getElementById('updated-css').innerText) {
+                document.getElementById('copy-button').disabled = false;
+                document.getElementById('clear-button').disabled = false;
+            }
+        }
+
+        // Save content whenever textareas lose focus
+        document.getElementById('original-css').addEventListener('blur', saveContent);
+        document.getElementById('changes-css').addEventListener('blur', saveContent);
+
+        // Load content on page load
+        window.addEventListener('load', loadContent);
+
+        function parseCSS(cssText) {
+            const pattern = /([^{]+)\{([^}]+)\}/g;
+            const cssDict = {};
+            let match;
+            while (match = pattern.exec(cssText)) {
+                const selector = match[1].trim();
+                const rules = match[2].trim().split(';').reduce((acc, rule) => {
+                    if (rule.trim()) {
+                        const [property, value] = rule.split(':');
+                        if (property && value) {
+                            acc[property.trim()] = value.trim();
+                        }
+                    }
+                    return acc;
+                }, {});
+                cssDict[selector] = rules;
+            }
+            return cssDict;
+        }
+
+        function cssDictToText(cssDict) {
+            return Object.entries(cssDict).map(([selector, rules]) => {
+                const rulesText = Object.entries(rules).map(([property, value]) => {
+                    return `  ${property}: ${value};`;
+                }).join('\n');
+                return `${selector} {\n${rulesText}\n}`;
+            }).join('\n');
+        }
+
+        function showAlert(message) {
+            const alertModal = document.getElementById('alert-modal');
+            const alertMessage = document.getElementById('alert-message');
+            alertMessage.innerText = message;
+            alertModal.style.display = 'flex';
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alert-modal').style.display = 'none';
+        }
+
+        function mergeCSS() {
+            const originalCSS = document.getElementById('original-css').value;
+            const changesCSS = document.getElementById('changes-css').value;
+
+            if (!originalCSS && !changesCSS) {
+                showAlert('No Inputs Detected');
+                return;
+            }
+            if (!originalCSS) {
+                showAlert('No Original CSS Detected');
+                return;
+            }
+            if (!changesCSS) {
+                showAlert('No CSS Updates Detected');
+                return;
+            }
+
+            const originalDict = parseCSS(originalCSS);
+            const changesDict = parseCSS(changesCSS);
+
+            let isSame = true;
+            Object.entries(changesDict).forEach(([selector, rules]) => {
+                if (!originalDict[selector] || JSON.stringify(originalDict[selector]) !== JSON.stringify(rules)) {
+                    isSame = false;
+                    if (originalDict[selector]) {
+                        originalDict[selector] = { ...originalDict[selector], ...rules };
+                    } else {
+                        originalDict[selector] = rules;
+                    }
+                }
+            });
+
+            if (isSame) {
+                showAlert('The CSS Updates are functionally the same as the Original CSS. No changes needed.');
+                return;
+            }
+
+            const updatedCSS = cssDictToText(originalDict);
+            document.getElementById('updated-css').innerText = updatedCSS;
+
+            document.getElementById('copy-button').disabled = false;
+            document.getElementById('clear-button').disabled = false;
+
+            // Save the updated CSS to localStorage
+            saveContent();
+        }
+
+        function copyToClipboard() {
+            const updatedCSSText = document.getElementById('updated-css').innerText;
+            navigator.clipboard.writeText(updatedCSSText).then(() => {
+                showAlert("Copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        }
+
+        function clearMergedCSS() {
+            document.getElementById('updated-css').innerText = '';
+            document.getElementById('copy-button').disabled = true;
+            document.getElementById('clear-button').disabled = true;
+
+            saveContent();
+        }
+
+        function openHelpModal() {
+            document.getElementById('help-modal').style.display = 'flex';
+        }
+
+        function closeHelpModal() {
+            document.getElementById('help-modal').style.display = 'none';
+        }
+
+        window.addEventListener('scroll', () => {
+            const buttonContainer = document.getElementById('button-container');
+            const updatedCSS = document.getElementById('updated-css');
+            buttonContainer.style.width = updatedCSS.offsetWidth + 'px';
+            const sticky = buttonContainer.offsetTop;
+            const spacer = document.getElementById('spacer');
+            console.log(window.pageYOffset, sticky, spacer.offsetTop);
+
+            if (window.pageYOffset + 60 > sticky) {
+                buttonContainer.classList.add('fixed');
+                spacer.style.display = 'block';
+            } 
+            if (buttonContainer.classList.contains('fixed') && window.pageYOffset < spacer.offsetTop - 60) {
+                buttonContainer.classList.remove('fixed');
+                spacer.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
